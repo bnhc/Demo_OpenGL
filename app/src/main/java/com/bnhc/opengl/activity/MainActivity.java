@@ -1,4 +1,4 @@
-package com.bnhc.opengl;
+package com.bnhc.opengl.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.bnhc.opengl.R;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         checkSupportGL();
         if (supportEs2) {
             glSurfaceView = new GLSurfaceView(getApplicationContext());
-            glSurfaceView.setRenderer(new MyGLRenderer());
+            //glSurfaceView.setRenderer(new MyGLRenderer());
             setContentView(glSurfaceView);
         } else {
             setContentView(R.layout.activity_main);
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         if (glSurfaceView != null) glSurfaceView.onPause();
     }
 
-    class MyGLRenderer implements GLSurfaceView.Renderer {
+    /*class MyGLRenderer implements GLSurfaceView.Renderer {
 
         //Let Show Triangle
         private float[] mTriangleArray = {
@@ -132,5 +134,5 @@ public class MainActivity extends AppCompatActivity {
             gl10.glDisableClientState(GL10.GL_VERTEX_ARRAY);
             gl10.glFinish();
         }
-    }
+    }*/
 }
