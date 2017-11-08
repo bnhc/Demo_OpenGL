@@ -8,7 +8,6 @@ import com.bnhc.opengl.model.Model;
 import com.bnhc.opengl.model.Point;
 import com.bnhc.opengl.util.STLReader;
 
-import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -26,8 +25,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private float mScalef = 1;
     private float mDegree = 0;
 
-    public GLRenderer(Context context) throws IOException {
-        model = new STLReader().pareBinStlInAsset(context, "huba.stl");
+    public GLRenderer(Context context)  {
+        model = new STLReader().pareBinStlInAsset(context, "test.stl");
+        if(model==null) return;
     }
 
     @Override
@@ -67,6 +67,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void rotate(float degree){
-        mDegree = degree;
+        this.mDegree = degree;
     }
 }

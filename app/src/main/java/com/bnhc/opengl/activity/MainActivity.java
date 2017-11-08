@@ -7,23 +7,37 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.bnhc.opengl.R;
+import com.bnhc.opengl.renderer.GLRenderer;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "OpenGL";
     private boolean supportEs2;
     private GLSurfaceView glSurfaceView;
+    private GLRenderer renderer;
+
+    private final Handler mainHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case  0x001:
+                    rotateDegreen(msg.arg1);
+                    break;
+            }
+        }
+    };
+
+    private void rotateDegreen(int degreen) {
+        renderer.rotate(degreen);
+    }
 
     @SuppressLint("ShowToast")
     @Override
@@ -32,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
         checkSupportGL();
         if (supportEs2) {
             glSurfaceView = new GLSurfaceView(getApplicationContext());
-            //glSurfaceView.setRenderer(new MyGLRenderer());
+            renderer  = new GLRenderer(getApplicationContext());
+            glSurfaceView.setRenderer(renderer);
             setContentView(glSurfaceView);
         } else {
             setContentView(R.layout.activity_main);
@@ -56,7 +71,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (glSurfaceView != null) glSurfaceView.onResume();
+        if (glSurfaceView != null){
+            glSurfaceView.onResume();
+
+            //Change the rotate
+            new Thread(){
+                int rotateDegree ;
+                @Override
+                public void run() {
+                    while(true){
+                        try {
+                            Message message = Message.obtain();
+                            sleep(500);
+                            rotateDegree+=5;
+                            message.arg1 = rotateDegree;
+                            mainHandler.sendMessage(message);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }.start();
+        }
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Model {
         float centorX = minX + (maxX - minX) / 2;
         float centorY = minY + (maxY - minY) / 2;
         float centorZ = minZ + (maxZ - maxZ) / 2;
-        return new Point((int) centorX, (int) centorY, (int) centorZ);
+        return new Point(centorX,  centorY,  centorZ);
     }
 
     public float getR() {

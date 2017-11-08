@@ -1,6 +1,7 @@
 package com.bnhc.opengl.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.bnhc.opengl.model.Model;
 
@@ -14,6 +15,7 @@ import java.io.InputStream;
  */
 
 public class STLReader {
+    private final static String TAG="STLReader";
     private StlLoadListener stlLoadListener;
 
     public Model parserBinStlInSDCard(String path) throws IOException {
@@ -22,9 +24,19 @@ public class STLReader {
         return parserBinStl(fis);
     }
 
-    public Model pareBinStlInAsset(Context context, String path) throws IOException {
-        InputStream in = context.getAssets().open(path);
-        return parserBinStl(in);
+    public Model pareBinStlInAsset(Context context, String path)  {
+        InputStream in = null;
+        try {
+            in = context.getAssets().open(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            return parserBinStl(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Model parserBinStl(InputStream in) throws IOException {
@@ -38,13 +50,13 @@ public class STLReader {
         byte[] bytes = new byte[4];
         in.read(bytes);//Read the count of triangular fact
         int facetCount = Util.byte4ToInt(bytes, 0);
-        model.setFacetCount(facetCount);
+        model.setFacetCount(facetCount/2);
         if (facetCount == 0) {
             in.close();
             return model;
         }
-        byte[] facetBytes = new byte[50 * model.getFacetCount()];
-        in.read(facetBytes);
+        byte[] facetBytes = new byte[50 * facetCount/2];
+        int result =  in.read(facetBytes);
         in.close();
         parseModel(model, facetBytes);
         if (stlLoadListener != null) {
